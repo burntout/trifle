@@ -13,3 +13,12 @@ phonify = lambda s: ' '.join([v for j in map(lambda x: [ str(['abc', 'def', 'ghi
 dephonify = lambda m: ''.join([['abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz'][int(i[0])-2][len(i)-1] for i in m.split()])
 
 
+''' 
+function to calculate how many Mon,Tue,Wed,... Sun 
+fell on a paticular dayofmonth in the gregorian calendar ( 400 years )
+For example, is Friday 13th more common than other days
+'''
+import datetime
+howmanyweekdays = lambda dayofmonth: [len(filter(lambda x: x==day, [datetime.date(year,month,dayofmonth).weekday() for year in range(2000,2400) for month in range(1,13)])) for day in range(0,7)]
+
+
