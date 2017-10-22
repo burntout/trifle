@@ -1,0 +1,2 @@
+# generate fake band names from randome words
+alias punkbandname='echo the $(shuf -n 2 /usr/share/dict/words  | tr "\n" " ")'
