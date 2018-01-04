@@ -38,7 +38,7 @@ encode n plain = map fst $ qs tuples
 -- this is zipped with the cipher, and the resulting list of tuples 
 -- sorted on that.
 
-decode :: Int -> String -> String
+decode :: Int -> [a] -> [a]
 decode n cipher = map fst $ qs tuples 
         where 
             tuples = zip cipher $ encode n [0 .. (length cipher)-1] 
