@@ -13,7 +13,8 @@ ways t (c:cs)
 
 generateOutput :: (Integer) -> [Char] 
 generateOutput n = do 
-    let w = show $ ways n [200,100,50,20,10,5,2,1]
+    -- let w = show $ ways n [200,100,50,20,10,5,2,1]
+    let w = show $ ways n [2,1]
     let num = show n
     let s = "Target " ++ num ++ ": "
     s ++ w
