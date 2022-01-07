@@ -58,20 +58,30 @@ def get_transition_matrix(wordlist, cur_pos):
         transition_matrix.append(get_next_probability_list(letter_list, cur_pos))
     return transition_matrix
 
-def main():
+def get_next_letter(wordlist, letter, position):
+    letters = [a for a in string.ascii_lowercase]
+    weights = get_transition_matrix(wordlist,position)[letters.index(letter)]
+    next_letter = np.random.choice(letters,1,True,weights)[0]
+    return next_letter
+
+def invent_word(length=5):
     out = ""
-    wordlist = get_words()
+    wordlist = get_words(length=length)
     letters = [a for a in string.ascii_lowercase]
     seed = np.random.choice(letters,1,True,get_next_probability_list(wordlist,-1))[0]
     out += seed
-    for i in range(0,4):
+    for i in range(0,length-1):
         weights = get_transition_matrix(wordlist,i)[letters.index(seed)]
         seed = np.random.choice(letters,1,True,weights)[0]
         out += seed
 
-    print("".join(out))
+    return "".join(out)
     
-            
+    
+def main():
+    new_word = invent_word(length=5)
+    print(new_word)
+
 
 if __name__ == "__main__":
     main()
