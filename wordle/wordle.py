@@ -6,13 +6,6 @@ import numpy as np
 def normalize_word(word):
     return word.translate(str.maketrans('', '', string.punctuation)).lower()
 
-def match_length(word,length=5):
-    if len(word) == length and word[-2] == "'":  
-        return False
-    if len(word) == length: 
-        return True
-    return False
-
 def get_words(wordlist='/usr/share/dict/words', length=5):
     wl = open(wordlist, 'r')
     all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
@@ -45,6 +38,9 @@ def get_next_probability_list(wordlist, cur_pos):
     return bodge_factor(out)
 
 def bodge_factor(l):
+    ''' The probability list doesn't always sum to 1, because floating point errors(?).
+    this function is to bodge that.
+    It find the difference and then alters the most likely value so the total is now 1 '''
     bodge = round(1 - sum(l),5)
     m = max(l)
     i = l.index(m)
