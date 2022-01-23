@@ -12,6 +12,18 @@ def get_words(wordlist='/usr/share/dict/words', length=5):
     training_words = [word for word in all_words if len(word) == length]
     return list(set(training_words))
 
+def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, includes="", excludes="",positions={}):
+    wl = open(wordlist, 'r')
+    all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
+    training_words = [word for word in all_words if len(word) == length]
+    for c in includes:
+        training_words = [word for word in training_words if c in word]
+    for c in excludes:
+        training_words = [word for word in training_words if c not in word]
+    for pos,c in positions.items():
+        training_words = [word for word in training_words if word[pos] == c]
+    return list(set(training_words))
+
 def filter_by_letter_place(wordlist, letter, place):
     return [word for word in wordlist if word[place] == letter]
     
@@ -54,6 +66,10 @@ def get_transition_matrix(wordlist, cur_pos):
         transition_matrix.append(get_next_probability_list(letter_list, cur_pos))
     return transition_matrix
 
+def get_transition_matrices(length=5):
+    wordlist = get_words(length=length)
+    return [get_transition_matrix(wordlist, pos) for pos in range(0, length -1)]
+
 def get_next_letter(wordlist, letter, position):
     letters = [a for a in string.ascii_lowercase]
     weights = get_transition_matrix(wordlist,position)[letters.index(letter)]
@@ -63,7 +79,7 @@ def get_next_letter(wordlist, letter, position):
 def invent_word(length=5):
     out = ""
     wordlist = get_words(length=length)
-    letters = [a for a in string.ascii_lowercase]
+    letters = list(string.ascii_lowercase)
     seed = np.random.choice(letters,1,True,get_next_probability_list(wordlist,-1))[0]
     out += seed
     for i in range(0,length-1):
@@ -72,8 +88,19 @@ def invent_word(length=5):
         out += seed
 
     return "".join(out)
-    
-    
+
+def invent_word_with_constraint(length=5, includes="", excludes="", positions={}):
+    out = ""
+    wordlist = get_words_with_constraint(length=length,includes=includes,excludes=excludes,positions=positions)
+    letters = list(string.ascii_lowercase)
+    seed = np.random.choice(letters,1,True,get_next_probability_list(wordlist,-1))[0]
+    out += seed
+    for i in range(0,length-1):
+        weights = get_transition_matrix(wordlist,i)[letters.index(seed)]
+        seed = np.random.choice(letters,1,True,weights)[0]
+        out += seed
+
+    return "".join(out)
 def main():
     new_word = invent_word(length=5)
     print(new_word)
@@ -81,4 +108,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
