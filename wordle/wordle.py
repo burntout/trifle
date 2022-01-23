@@ -12,7 +12,7 @@ def get_words(wordlist='/usr/share/dict/words', length=5):
     training_words = [word for word in all_words if len(word) == length]
     return list(set(training_words))
 
-def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, includes="", excludes="",in_positions={},ex_positions={}):
+def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions={}, ex_positions={}):
     wl = open(wordlist, 'r')
     all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
     training_words = [word for word in all_words if len(word) == length]
@@ -90,9 +90,19 @@ def invent_word(length=5):
 
     return "".join(out)
 
-def invent_word_with_constraint(length=5, includes="", excludes="", in_positions={}, ex_positions={}):
+def make_in_dict(s):
+    return {x:s.index(x) for x in s if x in string.ascii_lowercase}
+
+def make_ex_dict(exs):
+    out={}
+    for s in exs:
+        c = ''.join([i for i in s if i.isalpha()])[0]
+        out[c] = [i for i,v in enumerate(s) if v == c]
+    return out
+
+def invent_word_with_constraint(length=5, excludes="", in_positions="", ex_positions={}):
     out = ""
-    wordlist = get_words_with_constraint(length=length,includes=includes,excludes=excludes,in_positions=in_positions, ex_positions=ex_positions)
+    wordlist = get_words_with_constraint(length=length, excludes=excludes, in_positions=make_in_dict(in_positions), ex_positions=make_ex_dict(ex_positions))
     letters = list(string.ascii_lowercase)
     seed = np.random.choice(letters,1,True,get_next_probability_list(wordlist,-1))[0]
     out += seed
@@ -102,10 +112,12 @@ def invent_word_with_constraint(length=5, includes="", excludes="", in_positions
         out += seed
 
     return "".join(out)
-def main():
-    new_word = invent_word(length=5)
-    print(new_word)
 
+
+
+def main():
+    new_word = invent_word_with_constraint(length=5, excludes="", in_positions="", ex_positions=[])
+    print(new_word)
 
 if __name__ == "__main__":
     main()
