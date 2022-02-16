@@ -12,15 +12,17 @@ def get_words(wordlist='/usr/share/dict/words', length=5):
     training_words = [word for word in all_words if len(word) == length]
     return list(set(training_words))
 
-def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions={}, ex_positions={}):
+def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions="", ex_positions=[]):
     wl = open(wordlist, 'r')
+    in_dict = make_in_dict(in_positions)
+    ex_dict = make_ex_dict(ex_positions)
     all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
     training_words = [word for word in all_words if len(word) == length]
     for c in excludes:
         training_words = [word for word in training_words if c not in word]
-    for c,pos in in_positions.items():
+    for c,pos in in_dict.items():
         training_words = [word for word in training_words if word[pos] == c]
-    for c,poss in ex_positions.items():
+    for c,poss in ex_dict.items():
         for pos in poss:
             training_words=[word for word in training_words if (c in word) and word[pos] != c] 
     return list(set(training_words))
@@ -100,9 +102,9 @@ def make_ex_dict(exs):
         out[c] = [i for i,v in enumerate(s) if v == c]
     return out
 
-def invent_word_with_constraint(length=5, excludes="", in_positions="", ex_positions={}):
+def invent_word_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions="", ex_positions={}):
     out = ""
-    wordlist = get_words_with_constraint(length=length, excludes=excludes, in_positions=make_in_dict(in_positions), ex_positions=make_ex_dict(ex_positions))
+    wordlist = get_words_with_constraint(wordlist=wordlist, length=length, excludes=excludes, in_positions=in_positions, ex_positions=ex_positions)
     letters = list(string.ascii_lowercase)
     seed = np.random.choice(letters,1,True,get_next_probability_list(wordlist,-1))[0]
     out += seed
@@ -112,6 +114,14 @@ def invent_word_with_constraint(length=5, excludes="", in_positions="", ex_posit
         out += seed
 
     return "".join(out)
+
+def make_wordle(wordlist='/usr/share/dict/words', length=5, excludes='', ex_positions=[], in_positions=""):
+    word = ""
+    var = {'wordlist':wordlist, 'excludes': excludes, 'ex_positions': ex_positions, 'in_positions': in_positions}
+    wordlist = get_words_with_constraint(**var)
+    while word not in wordlist:
+        word = invent_word_with_constraint(**var)
+    return word
 
 
 
