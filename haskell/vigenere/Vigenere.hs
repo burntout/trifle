@@ -23,4 +23,13 @@ modify a b = alphabet!!n
         bi = myIndex b alphabet
         n = (ai - bi) `mod` (length alphabet)
 
-pt = zipWith modify  (removeChar ct) (repeat key >>= id)
+modify' a b = alphabet!!n
+    where 
+        ai = myIndex a alphabet
+        bi = myIndex b alphabet
+        n = (ai + bi) `mod` (length alphabet)
+
+encode modifyFunction key text = zipWith modifyFunction text (concat $ repeat key)
+pt = encode modify key (removeChar ct)
+
+
