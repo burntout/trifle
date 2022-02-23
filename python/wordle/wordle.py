@@ -3,16 +3,18 @@
 import string
 import numpy as np
 
+WORDLIST='/usr/share/dict/british-english-huge'
+
 def normalize_word(word):
     return word.translate(str.maketrans('', '', string.punctuation)).lower()
 
-def get_words(wordlist='/usr/share/dict/british-english-huge', length=5):
+def get_words(wordlist=WORDLIST, length=5):
     wl = open(wordlist, 'r')
     all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
     training_words = [word for word in all_words if len(word) == length]
     return list(set(training_words))
 
-def get_words_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions="", ex_positions=[]):
+def get_words_with_constraint(wordlist=WORDLIST, length=5, excludes="", in_positions="", ex_positions=[]):
     wl = open(wordlist, 'r')
     in_dict = make_in_dict(in_positions)
     ex_dict = make_ex_dict(ex_positions)
@@ -102,7 +104,7 @@ def make_ex_dict(exs):
         out[c] = [i for i,v in enumerate(s) if v == c]
     return out
 
-def invent_word_with_constraint(wordlist='/usr/share/dict/words', length=5, excludes="", in_positions="", ex_positions={}):
+def invent_word_with_constraint(wordlist=WORDLIST, length=5, excludes="", in_positions="", ex_positions={}):
     out = ""
     wordlist = get_words_with_constraint(wordlist=wordlist, length=length, excludes=excludes, in_positions=in_positions, ex_positions=ex_positions)
     letters = list(string.ascii_lowercase)
@@ -115,7 +117,7 @@ def invent_word_with_constraint(wordlist='/usr/share/dict/words', length=5, excl
 
     return "".join(out)
 
-def make_wordle(wordlist='/usr/share/dict/words', length=5, excludes='', ex_positions=[], in_positions=""):
+def make_wordle(wordlist=WORDLIST, length=5, excludes='', ex_positions=[], in_positions=""):
     word = ""
     var = {'wordlist':wordlist, 'excludes': excludes, 'ex_positions': ex_positions, 'in_positions': in_positions}
     wordlist = get_words_with_constraint(**var)
