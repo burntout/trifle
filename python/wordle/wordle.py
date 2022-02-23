@@ -6,7 +6,7 @@ import numpy as np
 def normalize_word(word):
     return word.translate(str.maketrans('', '', string.punctuation)).lower()
 
-def get_words(wordlist='/usr/share/dict/words', length=5):
+def get_words(wordlist='/usr/share/dict/british-english-huge', length=5):
     wl = open(wordlist, 'r')
     all_words = [ normalize_word(w.strip()) for w in wl.readlines()]
     training_words = [word for word in all_words if len(word) == length]

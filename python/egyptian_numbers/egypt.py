@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from math import ceil
-from fractions in Fraction
+from fractions import Fraction
 
 def egypt(fraction):
     ''' takes in input fraction and outputs a list of fractions in egyptian form that sum to the input

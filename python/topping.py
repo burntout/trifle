@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from functools import *
 
 '''
 encode/decode strings to strings with binary
